@@ -1,2 +1,2 @@
-#ЭХО
+# ЭХО
 print(str(input()))
