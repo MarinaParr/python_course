@@ -1,0 +1,2 @@
+# ЭХО
+print(str(input()))
