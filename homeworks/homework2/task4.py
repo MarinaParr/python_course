@@ -11,12 +11,17 @@ a, *args = (int(i) for i in input().split())
 
 
 def rpfilter(a, *args):
-    rp = str()
+    rp = list()
     for arg in args:
         if euclid(a, arg) == 1:
-            rp += str(arg) + " "
+            rp.append(arg)
     if len(rp) == 0:
         return None
     return rp
 
-print (rpfilter(a, *args))
+if rpfilter(a, *args) == None:
+    print(rpfilter(a, *args))
+else:
+    for i in rpfilter(a, *args):
+        print (i, end=' ')
+
