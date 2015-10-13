@@ -1,8 +1,6 @@
 def euclid(n, m):
     if m >= n:
-        a = n
-        n = m
-        m = a
+        m, n = n, m
     if n % m == 0:
         return m
     return euclid(m, n % m)
@@ -24,4 +22,3 @@ if rpfilter(a, *args) == None:
 else:
     for i in rpfilter(a, *args):
         print (i, end=' ')
-
