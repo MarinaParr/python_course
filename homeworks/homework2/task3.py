@@ -1,8 +1,6 @@
 def euclid(n, m):
     if m >= n:
-        a = n
-        n = m
-        m = a
+        m, n = n, m
     if n % m == 0:
         return m
     return euclid(m, n % m)
