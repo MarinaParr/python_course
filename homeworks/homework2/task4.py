@@ -13,12 +13,9 @@ def rpfilter(a, *args):
     for arg in args:
         if euclid(a, arg) == 1:
             rp.append(arg)
-    if len(rp) == 0:
-        return None
     return rp
-
-if rpfilter(a, *args) == None:
-    print(rpfilter(a, *args))
+if rpfilter(a, *args) == list():
+    print(None)
 else:
     for i in rpfilter(a, *args):
         print (i, end=' ')
