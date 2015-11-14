@@ -1,3 +1,6 @@
+import math
+
+
 def combinations(n, k):
     if k > n:
         return 0
@@ -12,8 +15,7 @@ with open("dict.txt", "r") as f:
     adjectives = 0
     nouns = 0
     verbs = 0
-    adj = 1
-    i = 1
+    adj = 0
     for word in words:
         if word[-2:] == "yo":
             adjectives += 1
@@ -21,7 +23,7 @@ with open("dict.txt", "r") as f:
             nouns += 1
         if not (word[-2:] == "yo" or word[-2:] == "ka"):
             verbs += 1
-    for i in range(1, adjectives+1):
-        adj *= combinations(adjectives, i)**2
+    for i in range(1, 8):
+        adj += combinations(adjectives, i)*math.factorial(i)
     answer = nouns*verbs*adj
     print(answer)
