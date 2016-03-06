@@ -1,2 +1,0 @@
-# ЭХО
-print(str(input()))
