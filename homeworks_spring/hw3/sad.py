@@ -7,7 +7,7 @@ import shutil
 parser = argparse.ArgumentParser(description="Saves current state of"
                                              "file or directory"
                                              "or runs utility 'diff' on it")
-parser.add_argument("command",
+parser.add_argument("command", choices=['store', 'diff'],
                     type=str,
                     help="'store' for saving current state"
                          "of file or directory,"
@@ -27,5 +27,6 @@ if command == 'store':
     else:
         print("Не умею работать с аргументами-папками")
 else:
-    com = "diff " + path + " ./sad/" + path
+    name = path.split('/')[-1]
+    com = "diff " + path + " ./sad/" + name
     print(subprocess.call(com, shell=True))
