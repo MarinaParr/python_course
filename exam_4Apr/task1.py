@@ -31,9 +31,8 @@ else:
         for d, dirs, files in os.walk(path):
             for f in files:
                 path = os.path.join(d, f)
-                a = re.findall("png", path)
-                b = re.findall("jpg", path)
+                a = re.findall("\.png", path)
+                b = re.findall("\.jpg", path)
                 if a != [] or b != []:
                     com = "convert "+path+" -resize "+percentage+"% "+path
                     subprocess.call(com, shell=True)
-                    
