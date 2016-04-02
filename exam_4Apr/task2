@@ -1,0 +1,20 @@
+#!/usr/bin/python3.4
+import argparse
+from Bio import Entrez
+Entrez.email = "mparr@mail.ru"
+
+parser = argparse.ArgumentParser(description="")
+parser.add_argument("request",
+                    type=str)
+parser.add_argument("--taxon",
+                    type=str)
+
+args = parser.parse_args()
+request = args.request
+taxon = args.taxon
+
+term = request+" AND GSE[Entry Type]"+" AND "+taxon+"[Organism]"
+print(term)
+handle = Entrez.esearch("gds", term)
+record = Entrez.read(handle)
+handle.close()
