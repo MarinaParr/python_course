@@ -1,0 +1,139 @@
+1.
+import sqlite3 as sq
+with sq.connect("data.sqlite") as con:
+    cur = con.cursor()
+    for row in cur.execute(
+            "select * from Users "
+            "group by username"
+    ):
+        print(row)
+2.
+import sqlite3 as sq
+with sq.connect("data.sqlite") as con:
+    cur = con.cursor()
+    for row in cur.execute(
+            "select * from Users "
+            "group by registered "
+            "limit 5"
+    ):
+        print(row)
+3.
+import sqlite3 as sq
+with sq.connect("data.sqlite") as con:
+    cur = con.cursor()
+    for row in cur.execute(
+            "select Users.username, count (*) from Users "
+            "inner join Listened on Listened.user_id = Users.id "
+            "group by Users.id "
+            "order by count(*) desc limit 5"
+    ):
+        print(row)
+4.
+import sqlite3 as sq
+with sq.connect("data.sqlite") as con:
+    cur = con.cursor()
+    for row in cur.execute(
+            "select Artists.name, count(*) from Artists "
+            "inner join Albums on artist_id = Artists.id "
+            "group by Artists.id "
+    ):
+        print(row)
+5.
+import sqlite3 as sq
+with sq.connect("data.sqlite") as con:
+    cur = con.cursor()
+    for row in cur.execute(
+            "select Artists.name, count(*) from Artists "
+            "inner join Albums on artist_id = Artists.id "
+            "inner join Songs on album_id = Albums.id "
+            "group by Artists.name "
+    ):
+        print(row)
+6.
+import sqlite3 as sq
+with sq.connect("data.sqlite") as con:
+    cur = con.cursor()
+    for row in cur.execute(
+            "select Artists.name, Albums.name, count(*) from Artists "
+            "inner join Albums on artist_id = Artists.id "
+            "inner join Songs on album_id = Albums.id "
+            "group by Albums.name "
+            "order by count(*) desc limit 1"
+    ):
+        print(row)
+7.
+import sqlite3 as sq
+with sq.connect("data.sqlite") as con:
+    cur = con.cursor()
+    for row in cur.execute(
+            "select Artists.name, Albums.name, total(Songs.duration) from Artists "
+            "inner join Albums on artist_id = Artists.id "
+            "inner join Songs on album_id = Albums.id "
+            "group by Albums.name "
+            "order by total(Songs.duration) desc limit 1"
+    ):
+        print(row)
+8.
+import sqlite3 as sq
+with sq.connect("data.sqlite") as con:
+    cur = con.cursor()
+    for row in cur.execute(
+            "select Artists.name, Albums.name, total(Songs.duration) / count(*) from Artists "
+            "inner join Albums on artist_id = Artists.id "
+            "inner join Songs on album_id = Albums.id "
+            "group by Albums.name "
+            "order by total(Songs.duration) / count(*) desc limit 1"
+    ):
+        print(row)
+9.
+import sqlite3 as sq
+with sq.connect("data.sqlite") as con:
+    cur = con.cursor()
+    for row in cur.execute(
+            "select Artists.name, Albums.name, Songs.name, count(*) from Artists "
+            "inner join Albums on artist_id = Artists.id "
+            "inner join Songs on album_id = Albums.id "
+            "inner join Listened on song_id = Songs.id "
+            "group by Songs.id "
+            "order by count(*) desc limit 5"
+    ):
+        print(row)
+10.
+import sqlite3 as sq
+with sq.connect("data.sqlite") as con:
+    cur = con.cursor()
+    for row in cur.execute(
+            "select Albums.release_year, count(*) from Albums "
+            "inner join Songs on album_id = Albums.id "
+            "inner join Listened on song_id = Songs.id "
+            "group by Albums.release_year "
+            "order by count(*) desc limit 1"
+    ):
+        print(row)
+11.
+import sqlite3 as sq
+with sq.connect("data.sqlite") as con:
+    cur = con.cursor()
+    for row in cur.execute(
+            "select Artists.name, Albums.name, Songs.name, Listened.start_time from Artists "
+            "inner join Albums on artist_id = Artists.id "
+            "inner join Songs on album_id = Albums.id "
+            "inner join Listened on song_id = Songs.id "
+            "inner join Users on Users.id = Listened.user_id "
+            "where Listened.user_id = '47' "
+            "order by Listened.start_time desc limit 20"
+    ):
+        print(row)
+12.
+import sqlite3 as sq
+with sq.connect("data.sqlite") as con:
+    cur = con.cursor()
+    for row in cur.execute(
+            "select Users.username, Artists.name, Albums.name, Songs.name, count(*) from Artists "
+            "inner join Albums on artist_id = Artists.id "
+            "inner join Songs on album_id = Albums.id "
+            "inner join Listened on song_id = Songs.id "
+            "inner join Users on Users.id = Listened.user_id "
+            "group by Users.username, Songs.name "
+    ):
+        print(row)
