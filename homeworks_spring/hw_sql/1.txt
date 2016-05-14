@@ -128,7 +128,7 @@ with sq.connect("data.sqlite") as con:
     cur = con.cursor()
     for row in cur.execute(
             "select Users.id, Users.name from Users "
-            "inner join orders on Users.id = user_id "
+            "inner join Orders on Users.id = user_id "
             "inner join GoodsInOrders on Orders.id = order_id "
             "inner join Goods on Goods.id = good_id "
             "where units = 'KG' "
