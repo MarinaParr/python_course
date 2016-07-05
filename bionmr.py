@@ -1,70 +1,65 @@
 import re
-
 n = 20 #int(input())
-
-def making_table(file):
-    with open("tab_"+file, "w") as t:
-        with open(file, "r") as f:
-            strings = f.readlines()
-            int_names = strings[0].split(" ")
-            int_names.remove(int_names[-1])
-            numbers = [  map(float,s.strip().split(" ")) for s in strings[1:]]
-            l = []
-            for int_name in int_names:
-                inf = re.split('~|::|--', int_name)
-                inf[1] = str(int((inf[1]))//76)
-                inf[4] = str(int((inf[4]))//76)
-                name = inf[0]+"~"+inf[1]+"::"+inf[2]+"--"+inf[3]+"~"+inf[4]+"::"+inf[5]
-                l.append(name)
-            t.write('\t'.join(l)+"\n")
-            length = len(numbers[0])
-            k = 0
-            for q in range((len(strings)//n)):
-                j = 0
-                while j != n:
-                    l = [0 for x in range(length)]
-                    for interactions in numbers[k:k+n]:
-                        for i in range(length):
-                            l[i] = l[i] + interactions[i]
-                    j += 1
-                    k += 1
-                t.write("\t".join(str(x) for x in l)+"\n")
-
-def reverse_table(file):
-    with open(file, "r") as tab:
-        with open("rev_"+file, "w") as rt:
-            lis = [x.split() for x in tab]
-            for x in zip(*lis):
-                for y in x:
-                    rt.write(y+'\t')
-                rt.write('\n')
-
-def partition_and_sorting(file):
-    with open(file, "r") as rt:
-        strings = rt.readlines()
-        first_intss = dict()
-        for string in strings[:len(strings)-1]:
-            data = string.split("\t")
-            interactors = data[0]
-            first_interactor = re.split('~|::|--',interactors)[1]
-            if first_interactor not in first_intss:
-                first_intss[first_interactor] = list()
-                first_intss[first_interactor].append(string)
-            else:
-                first_intss[first_interactor].append(string)
-        for key in first_intss:
-            with open(key+"_inner_"+file, "w") as inner:
-                with open(key+"_outer_"+"_"+file, "w") as outer:
-                    for elem in first_intss[key]:
-                        second_interactor = re.split('~|::|--',(elem.split("\t")[0]))[4]
-                        if second_interactor == key:
-                            inner.write(elem+"\n")
-                        else:
-                            outer.write(elem+"\n")
-
-with open("list_of_files.txt", "r") as lf:
-    files_names = lf.read().split("\n")
-    for file_name in  filter(None, files_names):
-        making_table(file_name)
-        reverse_table("tab_"+file_name)
-        partition_and_sorting("rev_"+"tab_"+file_name)
+with open("hb_trace.dat", "r") as data:
+    strings = data.readlines()
+    length = (len(strings)-1)//n
+    int_names = strings[0].split(" ")
+    int_names.remove(int_names[-1])
+    l = []
+    for int_name in int_names:
+        inf = re.split('~|::|--', int_name)
+        num_mol_f = str((int(inf[1]))//76)
+        num_res_f = str(int(inf[1])%76)
+        num_mol_s = str((int(inf[4]))//76)
+        num_res_s = str(int(inf[4])%76)
+        name = inf[0]+num_res_f+"~"+num_mol_f+"::"+inf[2]+"--"+inf[3]+num_res_s+"~"+num_mol_s+"::"+inf[5]
+        l.append(name)
+    d = dict()
+    for elem in l:
+        d[elem] = []
+    for string in strings[1:]:
+        string = string.split(" ")
+        i = 0
+        for elem in string[:len(string)-1]:
+            d[l[i]].append(int(elem))
+            i += 1
+    for key in d:
+        st = []
+        k = 0
+        while k != (len(d[key])//n):
+            st.append(str((sum(d[key][k*20:k*20+20]))))
+            k += 1
+        d[key] = st
+    l_inn = []
+    l_out = []
+    for key in d:
+        name_elements = re.split('~|::|--', key)
+        name = name_elements[0]+"_"+name_elements[2]+"_"+name_elements[3]+"_"+name_elements[5]
+        if name_elements[1] == name_elements[4]:
+            if name not in l_inn:
+                l_inn.append(name)
+        else:
+            if name not in l_out:
+                l_out.append(name)
+    for i in range(48):#Number_of_molecules
+        with open (str(i)+"_inner.txt", "w") as f:
+            for element in l_inn:
+                items = element.split("_")
+                inn_int = items[0]+"~"+str(i)+"::"+items[1]+"--"+items[2]+"~"+str(i)+"::"+items[3]
+                if inn_int in d:
+                    f.write(inn_int+"\t"+"\t".join(d[inn_int])+"\n")
+                else:
+                    f.write(inn_int+"\t"+"\t".join([str(0) for x in range(length)])+"\n")
+    for i in range (48):#Number_of_molecules
+        with open (str(i)+"_outer.txt", "w") as f:
+            for elem in l_out:
+                items = elem.split("_")
+                out_int= items[0]+"~"+str(i)+"::"+items[1]+"--"+items[2]+"~"+"?"+"::"+items[3]
+                iis = re.split('~|::|--',out_int)
+                q = 0
+                for key in d:
+                    if len(re.findall(iis[0]+"\~"+iis[1]+"::"+iis[2]+"--"+iis[3]+"\~"+"\d+"+"::"+iis[5],key)) != 0:
+                        f.write(out_int+"\t"+"\t".join(d[key])+"\n")
+                        q = 1
+                if q == 0:
+                    f.write(out_int+"\t"+"\t".join([str(0) for x in range(length)])+"\n")
